@@ -8,12 +8,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 
 public class GnotesController {
 
@@ -41,6 +46,7 @@ public class GnotesController {
 	DBQueries query = new DBQueries();
 	Alert alert;
 	TextInputDialog dialog;
+	Dialog<String> dl;
 	// Other variables
 	String password = null;
 	int idCounter = 0;
@@ -803,6 +809,23 @@ public class GnotesController {
 		d.setTitle(title);
 		d.setHeaderText(headerText);
 		d.setContentText(content);
+		Optional<String> result = d.showAndWait();
+		if (result.isPresent()&&(result.get()!=null)) {
+			return result.get();
+		} else return null;
+	}
+	// simple password dialog
+	private String showPassDialog(Dialog<String> d, String title, String headerText, String content) {
+		d = new Dialog<String>();
+		d.setTitle(title);
+		d.setHeaderText(headerText);
+		ButtonType okButtonType = new ButtonType("OK", ButtonData.OK_DONE);
+		d.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+		GridPane grid = new GridPane();
+		PasswordField password = new PasswordField();
+		grid.add(new Label(content), 0, 0);
+		grid.add(password, 1, 0);
+		d.getDialogPane().setContent(grid);
 		Optional<String> result = d.showAndWait();
 		if (result.isPresent()&&(result.get()!=null)) {
 			return result.get();
