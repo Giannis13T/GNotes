@@ -174,13 +174,8 @@ public class GnotesController {
 							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 							if (pswd!=null) {
 								while (pswd.equals(password)==false) {
-									showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-									int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-									if (ans==0) {
-										pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-										if (pswd==null) break;
-									} else break;
-									
+									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (pswd==null) break;
 								}
 								if ((pswd!=null)&&(pswd.equals(password))) {
 									idCounter++;
@@ -210,13 +205,8 @@ public class GnotesController {
 							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 							if (pswd!=null) {
 								while (pswd.equals(password)==false) {
-									showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-									int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-									if (ans==0) {
-										pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-										if (pswd==null) break;
-									} else break;
-									
+									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (pswd==null) break;
 								}
 								if ((pswd!=null)&&(pswd.equals(password))) {
 									newNote.setNoteText(details.getText());
@@ -251,13 +241,8 @@ public class GnotesController {
 						pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 						if (pswd!=null) {
 							while (pswd.equals(password)==false) {
-								showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-								int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-								if (ans==0) {
-									pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-									if (pswd==null) break;
-								} else break;
-								
+								pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+								if (pswd==null) break;
 							}
 							if ((pswd!=null)&&(pswd.equals(password))) {
 								newNote.setNoteText(details.getText());
@@ -297,13 +282,8 @@ public class GnotesController {
 						pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 						if (pswd!=null) {
 							while (pswd.equals(password)==false) {
-								showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-								int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-								if (ans==0) {
-									pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-									if (pswd==null) break;
-								} else break;
-								
+								pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+								if (pswd==null) break;
 							}
 							if ((pswd!=null)&&(pswd.equals(password))) {
 								nt = listnotes.get(selected);
@@ -331,13 +311,8 @@ public class GnotesController {
 					pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 					if (pswd!=null) {
 						while (pswd.equals(password)==false) {
-							showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-							int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-							if (ans==0) {
-								pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-								if (pswd==null) break;
-							} else break;
-							
+							pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+							if (pswd==null) break;
 						}
 						if ((pswd!=null)&&(pswd.equals(password))) {
 							nt = listnotes.get(selected);
@@ -385,13 +360,8 @@ public class GnotesController {
 							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 							if (pswd!=null) {
 								while (pswd.equals(password)==false) {
-									showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-									int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-									if (ans==0) {
-										pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-										if (pswd==null) break;
-									} else break;
-									
+									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (pswd==null) break;
 								}
 								if ((pswd!=null)&&(pswd.equals(password))) {
 									locked = true;
@@ -416,13 +386,8 @@ public class GnotesController {
 							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 							if (pswd!=null) {
 								while (pswd.equals(password)==false) {
-									showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-									int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-									if (ans==0) {
-										pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-										if (pswd==null) break;
-									} else break;
-									
+									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (pswd==null) break;
 								}
 								if ((pswd!=null)&&(pswd.equals(password))) {
 									nt = listnotes.get(sel);
@@ -449,13 +414,8 @@ public class GnotesController {
 							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 							if (pswd!=null) {
 								while (pswd.equals(password)==false) {
-									showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-									int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-									if (ans==0) {
-										pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-										if (pswd==null) break;
-									} else break;
-									
+									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (pswd==null) break;
 								}
 								if ((pswd!=null)&&(pswd.equals(password))) {
 									locked = false;
@@ -474,13 +434,8 @@ public class GnotesController {
 							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 							if (pswd!=null) {
 								while (pswd.equals(password)==false) {
-									showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-									int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-									if (ans==0) {
-										pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-										if (pswd==null) break;
-									} else break;
-									
+									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (pswd==null) break;
 								}
 								if ((pswd!=null)&&(pswd.equals(password))) {
 									nt.setLocked(false);
@@ -514,12 +469,8 @@ public class GnotesController {
 							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 							if (pswd!=null) {
 								while (pswd.equals(password)==false) {
-									showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-									int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-									if (ans==0) {
-										pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-										if (pswd==null) break;
-									} else break;
+									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (pswd==null) break;
 								}
 								if ((pswd!=null)&&(pswd.equals(password))) {
 									newName = showInputDialog(dialog,"New Name",null,"Enter the note's new name: ");
@@ -554,12 +505,8 @@ public class GnotesController {
 							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 							if (pswd!=null) {
 								while (pswd.equals(password)==false) {
-									showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-									int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-									if (ans==0) {
-										pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-										if (pswd==null) break;
-									} else break;
+									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (pswd==null) break;
 								}
 								if ((pswd!=null)&&(pswd.equals(password))) {
 									newName = showInputDialog(dialog,"New Name",null,"Enter the note's new name: ");
@@ -595,12 +542,8 @@ public class GnotesController {
 						pswd = showPassDialog(dl,"Current Password",null,"Enter current password: ");
 						if (pswd!=null) {
 							while (pswd.equals(password)==false) {
-								showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-								int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-								if (ans==0) {
-									pswd = showPassDialog(dl,"Current Password",null,"Enter current password: ");
-									if (pswd==null) break;
-								} else break;
+								pswd = reEnterPassword(alert, dl,"Current Password",null,"Enter current password: ");
+								if (pswd==null) break;
 							}
 							if ((pswd!=null)&&(pswd.equals(password))) {
 								newPass = showPassDialog(dl,"New Password",null,"Enter the new password: ");
@@ -619,12 +562,8 @@ public class GnotesController {
 					pswd = showPassDialog(dl,"Current Password",null,"Enter current password: ");
 					if (pswd!=null) {
 						while (pswd.equals(password)==false) {
-							showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-							int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-							if (ans==0) {
-								pswd = showPassDialog(dl,"Current Password",null,"Enter current password: ");
-								if (pswd==null) break;
-							} else break;
+							pswd = reEnterPassword(alert, dl,"Current Password",null,"Enter current password: ");
+							if (pswd==null) break;
 						}
 						if ((pswd!=null)&&(pswd.equals(password))) {
 							newPass = showPassDialog(dl,"New Password",null,"Enter the new password: ");
@@ -660,21 +599,13 @@ public class GnotesController {
 									pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 									if (pswd!=null) {
 										while (pswd.equals(password)==false) {
-											showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-											int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-											if (ans==0) {
-												pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-												if (pswd==null) {
-													list.getSelectionModel().select(oblist.size()-1);
-													details.setText(curText);
-													ind = -1;
-													ind2 = -1;
-													break;
-												}
-											} else {
+											pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+											if (pswd==null) {
+												list.getSelectionModel().select(oblist.size()-1);
+												details.setText(curText);
 												ind = -1;
 												ind2 = -1;
-												break;										
+												break;
 											}
 										}
 										if ((pswd!=null)&&(pswd.equals(password))) {
@@ -711,19 +642,11 @@ public class GnotesController {
 								pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 								if (pswd!=null) {
 									while (pswd.equals(password)==false) {
-										showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-										int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-										if (ans==0) {
-											pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-											if (pswd==null) {
-												ind = -1;
-												ind2 = -1;
-												break;
-											}
-										} else {
+										pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+										if (pswd==null) {
 											ind = -1;
 											ind2 = -1;
-											break;					
+											break;
 										}
 									}
 									if ((pswd!=null)&&(pswd.equals(password))) {		
@@ -747,19 +670,11 @@ public class GnotesController {
 								pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 								if (pswd!=null) {
 									while (pswd.equals(password)==false) {
-										showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
-										int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
-										if (ans==0) {
-											pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-											if (pswd==null) {
-												ind = -1;
-												ind2 = -1;
-												break;
-											}
-										} else {
+										pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+										if (pswd==null) {
 											ind = -1;
 											ind2 = -1;
-											break;										
+											break;
 										}
 									}
 									if ((pswd!=null)&&(pswd.equals(password))) {
@@ -836,5 +751,15 @@ public class GnotesController {
 		if (result.isPresent()&&(result.get()!=null)) {
 			return result.get();
 		} else return null;
+	}
+	// re-enter password function when password is wrong
+	private String reEnterPassword(Alert alert, Dialog<String> d, String title, String headerText, String content) {
+		String pswd = null;
+		showDialog(alert,2,"Password incorrect",null,"The password is incorrect");
+		int ans = showConfirmDialog(alert, "Password incorrect", null, "Do you want to try again?");
+		if (ans==0) {
+			pswd = showPassDialog(d,title,headerText,content);
+		} else return null;
+		return pswd;
 	}
 }
