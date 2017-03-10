@@ -823,9 +823,15 @@ public class GnotesController {
 		d.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 		GridPane grid = new GridPane();
 		PasswordField password = new PasswordField();
-		grid.add(new Label(content), 0, 0);
-		grid.add(password, 1, 0);
+		grid.add(new Label(content), 0, 1);
+		grid.add(password, 1, 1);
 		d.getDialogPane().setContent(grid);
+		d.setResultConverter(dialogButton -> {
+		    if (dialogButton == okButtonType) {
+		        return new String(password.getText());
+		    }
+		    else return null;
+		});
 		Optional<String> result = d.showAndWait();
 		if (result.isPresent()&&(result.get()!=null)) {
 			return result.get();
