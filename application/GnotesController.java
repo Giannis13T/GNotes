@@ -2,6 +2,8 @@ package application;
 
 import java.sql.*;
 import java.util.Optional;
+
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -741,6 +743,7 @@ public class GnotesController {
 		grid.add(new Label(content), 0, 1);
 		grid.add(password, 1, 1);
 		d.getDialogPane().setContent(grid);
+		Platform.runLater(() -> password.requestFocus());
 		d.setResultConverter(dialogButton -> {
 		    if (dialogButton == okButtonType) {
 		        return new String(password.getText());
