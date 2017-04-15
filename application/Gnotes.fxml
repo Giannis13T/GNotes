@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="800.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.GnotesController">
+   <left>
+      <ListView fx:id="list" focusTraversable="false" onMouseClicked="#listItemClicked" prefHeight="425.0" prefWidth="252.0" BorderPane.alignment="CENTER">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></ListView>
+   </left>
+   <top>
+      <MenuBar id="menubar" focusTraversable="false" prefHeight="26.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+        <menus>
+          <Menu id="menu" mnemonicParsing="false" styleClass="menu" text="Note">
+            <items>
+              <MenuItem id="menuitem" fx:id="New" mnemonicParsing="false" onAction="#menuItemsClicked" text="New note" />
+                  <MenuItem id="menuitem" fx:id="save" mnemonicParsing="false" onAction="#menuItemsClicked" text="Save note" />
+                  <MenuItem id="menuitem" fx:id="delete" mnemonicParsing="false" onAction="#menuItemsClicked" text="Delete note" />
+            </items>
+          </Menu>
+          <Menu id="menu" mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem id="menuitem" fx:id="lock" mnemonicParsing="false" onAction="#menuItemsClicked" text="Lock note" />
+                  <MenuItem id="menuitem" fx:id="unlock" mnemonicParsing="false" onAction="#menuItemsClicked" text="Unlock note" />
+                  <MenuItem id="menuitem" fx:id="changename" mnemonicParsing="false" onAction="#menuItemsClicked" text="Change note's name" />
+            </items>
+          </Menu>
+          <Menu id="menu" mnemonicParsing="false" text="Settings">
+            <items>
+              <MenuItem id="menuitem" fx:id="newpass" mnemonicParsing="false" onAction="#menuItemsClicked" text="Change password" />
+            </items>
+          </Menu>
+            <Menu id="menu" mnemonicParsing="false" text="Help">
+              <items>
+                <MenuItem id="menuitem" fx:id="about" mnemonicParsing="false" onAction="#menuItemsClicked" text="About" />
+              </items>
+            </Menu>
+        </menus>
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor>
+      </MenuBar>
+   </top>
+   <center>
+      <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" prefHeight="375.0" prefWidth="405.0" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
+         <content>
+            <TextArea fx:id="details" focusTraversable="false" prefHeight="373.0" prefWidth="399.0" wrapText="true" />
+         </content>
+      </ScrollPane>
+   </center>
+   <cursor>
+      <Cursor fx:constant="NONE" />
+   </cursor>
+</BorderPane>
