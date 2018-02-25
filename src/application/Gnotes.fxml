@@ -5,9 +5,8 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.web.HTMLEditor?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="800.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.GnotesController">
    <left>
@@ -49,14 +48,10 @@
          </cursor>
       </MenuBar>
    </top>
-   <center>
-      <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" prefHeight="375.0" prefWidth="405.0" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
-         <content>
-            <TextArea fx:id="details" focusTraversable="false" prefHeight="373.0" prefWidth="399.0" wrapText="true" />
-         </content>
-      </ScrollPane>
-   </center>
    <cursor>
       <Cursor fx:constant="NONE" />
    </cursor>
+   <center>
+      <HTMLEditor fx:id="details" focusTraversable="false" htmlText="" prefHeight="373.0" prefWidth="399.0" BorderPane.alignment="CENTER" />
+   </center>
 </BorderPane>

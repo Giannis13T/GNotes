@@ -21,6 +21,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.web.HTMLEditor;
 
 public class GnotesController {
 
@@ -35,7 +36,7 @@ public class GnotesController {
 	@FXML private MenuItem about;
 	@FXML private ListView<String> list;
 	private final ObservableList<String> oblist = FXCollections.observableArrayList();
-	@FXML private TextArea details;
+	@FXML private HTMLEditor details;
 	// Database objects and variables
 	final String URL = "jdbc:derby:GNotesDB;create=true;user=gnotes";
 	Connection conn;
@@ -94,7 +95,7 @@ public class GnotesController {
 				if (answer==0) {
 					oblist.remove(noteName);
 					list.setItems(oblist);
-					details.setText(null);
+					details.setHtmlText("");
 					list.getSelectionModel().clearSelection();
 					ind = -1;
 					ind2 = -1;
@@ -106,8 +107,8 @@ public class GnotesController {
 						oblist.add(noteName);
 						list.setItems(oblist);
 						list.getSelectionModel().select(oblist.size()-1);
-						details.setEditable(true);
-						details.setText(null);
+						//details.setEditable(true);
+						details.setHtmlText("");
 						newlyCreated = true;
 						saved = false;
 						ind2 = list.getSelectionModel().getSelectedIndex();
@@ -118,7 +119,7 @@ public class GnotesController {
 				if (answer==0) {
 					oblist.remove(noteName);
 					list.setItems(oblist);
-					details.setText(null);
+					details.setHtmlText("");
 					list.getSelectionModel().clearSelection();
 					ind = -1;
 					ind2 = -1;
@@ -130,8 +131,8 @@ public class GnotesController {
 						oblist.add(noteName);
 						list.setItems(oblist);
 						list.getSelectionModel().select(oblist.size()-1);
-						details.setEditable(true);
-						details.setText(null);
+						//details.setEditable(true);
+						details.setHtmlText("");
 						newlyCreated = true;
 						saved = false;
 						ind2 = list.getSelectionModel().getSelectedIndex();
@@ -143,8 +144,8 @@ public class GnotesController {
 					oblist.add(noteName);
 					list.setItems(oblist);
 					list.getSelectionModel().select(oblist.size()-1);
-					details.setEditable(true);
-					details.setText(null);
+					//details.setEditable(true);
+					details.setHtmlText("");
 					newlyCreated = true;
 					saved = false;
 					locked = false;
@@ -156,8 +157,8 @@ public class GnotesController {
 					oblist.add(noteName);
 					list.setItems(oblist);
 					list.getSelectionModel().select(oblist.size()-1);
-					details.setEditable(true);
-					details.setText(null);
+					//details.setEditable(true);
+					details.setHtmlText("");
 					newlyCreated = true;
 					saved = false;
 					locked = false;
@@ -181,7 +182,7 @@ public class GnotesController {
 								}
 								if ((pswd!=null)&&(pswd.equals(password))) {
 									idCounter++;
-									newNote = new Note(idCounter, noteName, details.getText(), locked);
+									newNote = new Note(idCounter, noteName, details.getHtmlText(), locked);
 									listnotes.add(newNote);
 									query.insertValue(conn, st, newNote.getId(), noteName, newNote.getNoteText(), locked);
 									saved = true;
@@ -192,7 +193,7 @@ public class GnotesController {
 							}
 						} else {
 							idCounter++;
-							newNote = new Note(idCounter, noteName, details.getText(), locked);
+							newNote = new Note(idCounter, noteName, details.getHtmlText(), locked);
 							listnotes.add(newNote);
 							query.insertValue(conn, st, newNote.getId(), noteName, newNote.getNoteText(), locked);
 							saved = true;
@@ -211,7 +212,7 @@ public class GnotesController {
 									if (pswd==null) break;
 								}
 								if ((pswd!=null)&&(pswd.equals(password))) {
-									newNote.setNoteText(details.getText());
+									newNote.setNoteText(details.getHtmlText());
 									newNote.setLocked(true);
 									query.updateValue(conn, st, newNote.getId(), newNote.getName(), newNote.getNoteText(), newNote.isLocked());
 									saved = true;
@@ -221,7 +222,7 @@ public class GnotesController {
 								}
 							}
 						} else {
-							newNote.setNoteText(details.getText());
+							newNote.setNoteText(details.getHtmlText());
 							newNote.setLocked(false);
 							query.updateValue(conn, st, newNote.getId(), newNote.getName(), newNote.getNoteText(), newNote.isLocked());
 							saved = true;
@@ -247,7 +248,7 @@ public class GnotesController {
 								if (pswd==null) break;
 							}
 							if ((pswd!=null)&&(pswd.equals(password))) {
-								newNote.setNoteText(details.getText());
+								newNote.setNoteText(details.getHtmlText());
 								newNote.setLocked(true);
 								query.updateValue(conn, st, newNote.getId(), newNote.getName(), newNote.getNoteText(), newNote.isLocked());
 								saved = true;
@@ -257,7 +258,7 @@ public class GnotesController {
 							}
 						}
 					} else {
-						newNote.setNoteText(details.getText());
+						newNote.setNoteText(details.getHtmlText());
 						newNote.setLocked(false);
 						query.updateValue(conn, st, newNote.getId(), newNote.getName(), newNote.getNoteText(), newNote.isLocked());
 						saved = true;
@@ -293,7 +294,7 @@ public class GnotesController {
 								query.deleteValue(conn, st, nt.getId());
 								oblist.remove(selected);
 								list.setItems(oblist);
-								details.setText(null);
+								details.setHtmlText("");
 							}
 						}
 					} else {
@@ -302,7 +303,7 @@ public class GnotesController {
 						query.deleteValue(conn, st, nt.getId());
 						oblist.remove(selected);
 						list.setItems(oblist);
-						details.setText(null);
+						details.setHtmlText("");
 					}
 				}
 			} else if (selected==-1) {
@@ -322,7 +323,7 @@ public class GnotesController {
 							query.deleteValue(conn, st, nt.getId());
 							oblist.remove(selected);
 							list.setItems(oblist);
-							details.setText(null);
+							details.setHtmlText("");
 							list.getSelectionModel().clearSelection();
 							ind = -1;
 							ind2 = -1;
@@ -334,7 +335,7 @@ public class GnotesController {
 					query.deleteValue(conn, st, nt.getId());
 					oblist.remove(selected);
 					list.setItems(oblist);
-					details.setText(null);
+					details.setHtmlText("");
 					list.getSelectionModel().clearSelection();
 					ind = -1;
 					ind2 = -1;
@@ -540,7 +541,7 @@ public class GnotesController {
 						ind = -1;
 						ind2 = -1;
 						oblist.remove(noteName);
-						details.setText(null);
+						details.setHtmlText("");
 						pswd = showPassDialog(dl,"Current Password",null,"Enter current password: ");
 						if (pswd!=null) {
 							while (pswd.equals(password)==false) {
@@ -560,7 +561,7 @@ public class GnotesController {
 					list.getSelectionModel().clearSelection();
 					ind = -1;
 					ind2 = -1;
-					details.setText(null);
+					details.setHtmlText("");
 					pswd = showPassDialog(dl,"Current Password",null,"Enter current password: ");
 					if (pswd!=null) {
 						while (pswd.equals(password)==false) {
@@ -592,10 +593,10 @@ public class GnotesController {
 					if (ind!=(oblist.size()-1)) {
 						if ((!saved)&&(newlyCreated)) {
 							int answer = showConfirmDialog(alert, "Warning", null, "A note is unsaved. If you select another note, the unsaved one will be deleted.\nDo you want to proceed?");
-							String curText = details.getText();
+							String curText = details.getHtmlText();
 							if (answer==0) {
 								locked = false;
-								details.setText(null);
+								details.setHtmlText("");
 								if (listnotes.get(ind).isLocked()) {
 									String pswd = null;
 									pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
@@ -604,7 +605,7 @@ public class GnotesController {
 											pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
 											if (pswd==null) {
 												list.getSelectionModel().select(oblist.size()-1);
-												details.setText(curText);
+												details.setHtmlText(curText);
 												ind = -1;
 												ind2 = -1;
 												break;
@@ -613,26 +614,26 @@ public class GnotesController {
 										if ((pswd!=null)&&(pswd.equals(password))) {
 											oblist.remove(noteName);
 											list.setItems(oblist);
-											details.setText(listnotes.get(ind).getNoteText());
+											details.setHtmlText(listnotes.get(ind).getNoteText());
 											saved = true;
 											newlyCreated = false;
 										}
 									} else {
 										list.getSelectionModel().select(oblist.size()-1);
-										details.setText(curText);
+										details.setHtmlText(curText);
 										ind = -1;
 										ind2 = -1;
 									}
 								} else {
 									oblist.remove(noteName);
 									list.setItems(oblist);
-									details.setText(listnotes.get(ind).getNoteText());
+									details.setHtmlText(listnotes.get(ind).getNoteText());
 									saved = true;
 									newlyCreated = false;
 								}
 							} else {
 								list.getSelectionModel().select(oblist.size()-1);
-								details.setText(curText);
+								details.setHtmlText(curText);
 								ind = -1;
 								ind2 = -1;
 							}
@@ -640,7 +641,7 @@ public class GnotesController {
 							if (listnotes.get(ind).isLocked()) {
 								String pswd = null;
 								list.getSelectionModel().clearSelection();
-								details.setText(null);
+								details.setHtmlText("");
 								pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 								if (pswd!=null) {
 									while (pswd.equals(password)==false) {
@@ -653,14 +654,14 @@ public class GnotesController {
 									}
 									if ((pswd!=null)&&(pswd.equals(password))) {		
 										list.getSelectionModel().select(ind);
-										details.setText(listnotes.get(ind).getNoteText());
+										details.setHtmlText(listnotes.get(ind).getNoteText());
 									}
 								} else {
 									ind = -1;
 									ind2 = -1;
 								}
 							} else {
-								details.setText(listnotes.get(ind).getNoteText());
+								details.setHtmlText(listnotes.get(ind).getNoteText());
 							}
 						}
 					} else {
@@ -668,7 +669,7 @@ public class GnotesController {
 							if (listnotes.get(ind).isLocked()) {
 								String pswd = null;
 								list.getSelectionModel().clearSelection();
-								details.setText(null);
+								details.setHtmlText("");
 								pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
 								if (pswd!=null) {
 									while (pswd.equals(password)==false) {
@@ -681,14 +682,14 @@ public class GnotesController {
 									}
 									if ((pswd!=null)&&(pswd.equals(password))) {
 										list.getSelectionModel().select(ind);
-										details.setText(listnotes.get(ind).getNoteText());
+										details.setHtmlText(listnotes.get(ind).getNoteText());
 									}
 								} else {
 									ind = -1;
 									ind2 = -1;
 								}
 							} else {
-								details.setText(listnotes.get(ind).getNoteText());
+								details.setHtmlText(listnotes.get(ind).getNoteText());
 							}
 						}
 					}
