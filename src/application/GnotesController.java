@@ -1,7 +1,16 @@
 package application;
 
+import java.security.SecureRandom;
+import java.security.spec.KeySpec;
 import java.sql.*;
+import java.util.Base64;
 import java.util.Optional;
+import java.util.Random;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -107,7 +116,6 @@ public class GnotesController {
 						oblist.add(noteName);
 						list.setItems(oblist);
 						list.getSelectionModel().select(oblist.size()-1);
-						//details.setEditable(true);
 						details.setHtmlText("");
 						newlyCreated = true;
 						saved = false;
@@ -131,7 +139,6 @@ public class GnotesController {
 						oblist.add(noteName);
 						list.setItems(oblist);
 						list.getSelectionModel().select(oblist.size()-1);
-						//details.setEditable(true);
 						details.setHtmlText("");
 						newlyCreated = true;
 						saved = false;
@@ -144,7 +151,6 @@ public class GnotesController {
 					oblist.add(noteName);
 					list.setItems(oblist);
 					list.getSelectionModel().select(oblist.size()-1);
-					//details.setEditable(true);
 					details.setHtmlText("");
 					newlyCreated = true;
 					saved = false;
@@ -157,7 +163,6 @@ public class GnotesController {
 					oblist.add(noteName);
 					list.setItems(oblist);
 					list.getSelectionModel().select(oblist.size()-1);
-					//details.setEditable(true);
 					details.setHtmlText("");
 					newlyCreated = true;
 					saved = false;
@@ -766,4 +771,6 @@ public class GnotesController {
 		} else return null;
 		return pswd;
 	}
+	
+	
 }
