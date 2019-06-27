@@ -772,5 +772,68 @@ public class GnotesController {
 		return pswd;
 	}
 	
+	/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 * -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 * -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 */
+
+	// generate salt for password hashing
+	public byte[] generateSalt() {
+		Random r = new SecureRandom();
+		byte[] salt = new byte[20];
+		r.nextBytes(salt);
+		return salt;
+	}
+
+	// hash the password and return it as a String in Base64 format
+	public String hashPassword(String password, byte[] salt) {
+		char[] charPass = password.toCharArray();
+		PBEKeySpec spec = new PBEKeySpec(charPass, salt, 65536, 512);
+		try {
+			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
+			byte[] securePass = factory.generateSecret(spec).getEncoded();
+			String encodedPass = Base64.getEncoder().encodeToString(securePass);
+			return encodedPass;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		} finally {
+			spec.clearPassword();
+		}
+	}
+
+	// use AES encryption to encrypt "plainText" using "key" (the key that should be used is the hashed password)
+	public byte[] encryptText(String plainText,SecretKey key) {
+		try {
+			Cipher cipher = Cipher.getInstance("AES");
+			cipher.init(Cipher.ENCRYPT_MODE, key);
+			byte[] cipherText = cipher.doFinal(plainText.getBytes());
+			return cipherText;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
+
+	// decrypt an AES encrypted "cipherText" using "key" (the key that should be used is the hashed password)
+	public String decryptText(byte[] cipherText,SecretKey key) {
+		try {
+			Cipher cipher = Cipher.getInstance("AES");
+			cipher.init(Cipher.DECRYPT_MODE, key);
+			String plainText = new String(cipher.doFinal(cipherText), "UTF-8");
+			return plainText;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
+
+	// check if the password the user entered is correct
+	public boolean verifyPassword (String password, byte[] salt, String key) {
+		if (password==null) return false;
+		String enteredPass = hashPassword(password, salt);
+		return enteredPass.equals(key);
+	}
+	
 	
 }
