@@ -98,14 +98,14 @@ public class DBQueries {
 	 * ---------------------------------------------------------------------------------------------------------------------------------------------------------
 	 */
 	
-	// Method that creates the database table containing the notes' password if it doesn't already exist
+	// Method that creates the database table containing the notes' password and salt if it doesn't already exist
 	public void createPassTable(Connection conn, Statement st) {
 		try {
 			DatabaseMetaData dbm = conn.getMetaData();
 			ResultSet tables = dbm.getTables(null, null, passTableName, null);
 			if (!tables.next()) {
 				st = conn.createStatement();
-				st.execute("CREATE TABLE "+passTableName+" (PSWD VARCHAR(30))");
+				st.execute("CREATE TABLE "+passTableName+" (PSWD VARCHAR(300), SALT VARCHAR(30) FOR BIT DATA)");
 				st.close();
 			}
 		} catch (SQLException ex) {
@@ -113,11 +113,12 @@ public class DBQueries {
 		}
 	}
 		
-	// Method that inserts the password in the password's table
-	public void insertPassValue(Connection conn, String pswd) {
+	// Method that inserts the password and salt in the password's table
+	public void insertPassValue(Connection conn, String pswd, byte[] salt) {
 		try {
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO "+passTableName+" (PSWD) VALUES (?)");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO "+passTableName+" (PSWD, SALT) VALUES (?,?)");
 			ps.setString(1, pswd);
+			ps.setBytes(2, salt);
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException ex) {
@@ -143,7 +144,25 @@ public class DBQueries {
 		}
 	}
 	
-	// Method that deletes the current password from the table
+	// Method that returns the salt from the table
+	public byte[] selectSaltValue(Connection conn, Statement st) {
+		byte[] salt = null;
+		try {
+			st = conn.createStatement();
+			ResultSet results = st.executeQuery("SELECT SALT FROM "+passTableName);
+			while (results.next()) {
+				salt = results.getBytes(2);
+			}
+			results.close();
+			st.close();
+			return salt;
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
+	
+	// Method that deletes the current password and salt from the table
 	public void deletePassValue(Connection conn, Statement st) {
 		try {
 			st = conn.createStatement();
@@ -154,11 +173,12 @@ public class DBQueries {
 		}
 	}
 	
-	// Method that updates the password in the table
-	public void updatePassValue(Connection conn, Statement st, String pswd) {
+	// Method that updates the password and salt in the table
+	public void updatePassValue(Connection conn, Statement st, String pswd, byte[] salt) {
 		try {
-			PreparedStatement ps = conn.prepareStatement("UPDATE "+passTableName+" SET PSWD=?");
+			PreparedStatement ps = conn.prepareStatement("UPDATE "+passTableName+" SET PSWD=?, SALT=?");
 			ps.setString(1, pswd);
+			ps.setBytes(2, salt);
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException ex) {
@@ -172,8 +192,8 @@ public class DBQueries {
 	
 	// Method that syncs the data contained in the database with the program when the user opens it
 	public ListNotes syncData(Connection c, Statement st) {
-		Integer id = new Integer(-1);
-		Integer id2 = new Integer(-1);
+		Integer id = Integer.valueOf(-1);
+		Integer id2 = Integer.valueOf(-1);
 		String nm = null;
 		String nt = null;
 		String lck = null;
@@ -185,14 +205,14 @@ public class DBQueries {
 			st = c.createStatement();
 			ResultSet results = st.executeQuery("SELECT ID FROM "+tableName);
 			while (results.next()) {
-				id2 = new Integer(results.getInt(1));
+				id2 = Integer.valueOf(results.getInt(1));
 				ids.add(id2);
 			}
 			results.close();
 			for (int i=0; i<ids.size(); i++) {
 				results = st.executeQuery("SELECT * FROM "+tableName+" WHERE ID="+ids.get(i));
 				while (results.next()) {
-					id = new Integer(results.getInt(1));
+					id = Integer.valueOf(results.getInt(1));
 					nm = results.getString(2);
 					nt = results.getString(3);
 					lck = results.getString(4);
