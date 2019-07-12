@@ -61,6 +61,7 @@ public class GnotesController {
 	Dialog<String> dl;
 	// Other variables
 	String password = null;
+	byte[] salt = null;
 	int idCounter = 0;
 	String noteName = null;
 	boolean locked = false;
@@ -85,6 +86,7 @@ public class GnotesController {
 		query.createTable(conn, st);
 		query.createPassTable(conn, st);
 		password = query.selectPassValue(conn, st);
+		salt = query.selectSaltValue(conn, st);
 		listnotes = query.syncData(conn, st);
 		for (int i=0; i<listnotes.size(); i++) {
 			idCounter = listnotes.get(i).getId();
@@ -178,14 +180,17 @@ public class GnotesController {
 				try {
 					if ((!saved)&&(newlyCreated)) {
 						if (locked) {
+							String textPass = null;
 							String pswd = null;
-							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-							if (pswd!=null) {
+							textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+							if (textPass!=null) {
+								pswd = hashPassword(textPass,salt);
 								while (pswd.equals(password)==false) {
-									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-									if (pswd==null) break;
+									textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (textPass==null) break;
+									pswd = hashPassword(textPass,salt);
 								}
-								if ((pswd!=null)&&(pswd.equals(password))) {
+								if ((textPass!=null)&&(pswd.equals(password))) {
 									idCounter++;
 									newNote = new Note(idCounter, noteName, details.getHtmlText(), locked);
 									listnotes.add(newNote);
@@ -209,14 +214,17 @@ public class GnotesController {
 					} else {
 						newNote = listnotes.get(list.getSelectionModel().getSelectedIndex());
 						if (newNote.isLocked()) {
+							String textPass = null;
 							String pswd = null;
-							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-							if (pswd!=null) {
+							textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+							if (textPass!=null) {
+								pswd = hashPassword(textPass,salt);
 								while (pswd.equals(password)==false) {
-									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-									if (pswd==null) break;
+									textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (textPass==null) break;
+									pswd = hashPassword(textPass,salt);
 								}
-								if ((pswd!=null)&&(pswd.equals(password))) {
+								if ((textPass!=null)&&(pswd.equals(password))) {
 									newNote.setNoteText(details.getHtmlText());
 									newNote.setLocked(true);
 									query.updateValue(conn, st, newNote.getId(), newNote.getName(), newNote.getNoteText(), newNote.isLocked());
@@ -245,14 +253,17 @@ public class GnotesController {
 				try {
 					newNote = listnotes.get(list.getSelectionModel().getSelectedIndex());
 					if (newNote.isLocked()) {
+						String textPass = null;
 						String pswd = null;
-						pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-						if (pswd!=null) {
+						textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+						if (textPass!=null) {
+							pswd = hashPassword(textPass,salt);
 							while (pswd.equals(password)==false) {
-								pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-								if (pswd==null) break;
+								textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+								if (textPass==null) break;
+								pswd = hashPassword(textPass,salt);
 							}
-							if ((pswd!=null)&&(pswd.equals(password))) {
+							if ((textPass!=null)&&(pswd.equals(password))) {
 								newNote.setNoteText(details.getHtmlText());
 								newNote.setLocked(true);
 								query.updateValue(conn, st, newNote.getId(), newNote.getName(), newNote.getNoteText(), newNote.isLocked());
@@ -286,14 +297,17 @@ public class GnotesController {
 					showDialog(alert,0,"Info",null,"You can't delete an unsaved note.");
 				} else {
 					if (nt.isLocked()) {
+						String textPass = null;
 						String pswd = null;
-						pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-						if (pswd!=null) {
+						textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+						if (textPass!=null) {
+							pswd = hashPassword(textPass,salt);
 							while (pswd.equals(password)==false) {
-								pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-								if (pswd==null) break;
+								textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+								if (textPass==null) break;
+								pswd = hashPassword(textPass,salt);
 							}
-							if ((pswd!=null)&&(pswd.equals(password))) {
+							if ((textPass!=null)&&(pswd.equals(password))) {
 								nt = listnotes.get(selected);
 								listnotes.remove(selected);
 								query.deleteValue(conn, st, nt.getId());
@@ -315,14 +329,17 @@ public class GnotesController {
 				showDialog(alert,2,"Error",null,"Please select a note from the list to delete.");
 			} else {
 				if (nt.isLocked()) {
+					String textPass = null;
 					String pswd = null;
-					pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-					if (pswd!=null) {
+					textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+					if (textPass!=null) {
+						pswd = hashPassword(textPass,salt);
 						while (pswd.equals(password)==false) {
-							pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-							if (pswd==null) break;
+							textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+							if (textPass==null) break;
+							pswd = hashPassword(textPass,salt);
 						}
-						if ((pswd!=null)&&(pswd.equals(password))) {
+						if ((textPass!=null)&&(pswd.equals(password))) {
 							nt = listnotes.get(selected);
 							listnotes.remove(selected);
 							query.deleteValue(conn, st, nt.getId());
@@ -349,6 +366,7 @@ public class GnotesController {
 		} else if (e.getSource()==lock) {
 		// What happens when "Lock note" option is selected
 			String pswd = null;
+			String textPass = null;
 			if (oblist.size()==0) {
 				showDialog(alert,2,"Error",null,"The list is empty.");
 			} else {
@@ -358,20 +376,25 @@ public class GnotesController {
 						showDialog(alert,2,"Error",null,"The note is already locked.");
 					} else {
 						if (password==null) {
-							showDialog(alert,0,"Password info",null,"This is gonna be the password you will be using in all of the notes.\nIt can't be more than 30 characters.");
-							password = showPassDialog(dl,"Password",null,"Enter the password: ");
-							if (password!=null) {
+							showDialog(alert,0,"Password info",null,"This is going to be the password you will be using in all of the notes.");
+							textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+							if (textPass!=null) {
+								byte[] passSalt = generateSalt();
+								salt = passSalt;
+								password = hashPassword(textPass, salt);
 								locked = true;
-								query.insertPassValue(conn, password);
+								query.insertPassValue(conn, password, salt);
 							}
 						} else {
-							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-							if (pswd!=null) {
+							textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+							if (textPass!=null) {
+								pswd = hashPassword(textPass,salt);
 								while (pswd.equals(password)==false) {
-									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-									if (pswd==null) break;
+									textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (textPass==null) break;
+									pswd = hashPassword(textPass,salt);
 								}
-								if ((pswd!=null)&&(pswd.equals(password))) {
+								if ((textPass!=null)&&(pswd.equals(password))) {
 									locked = true;
 								}
 							}
@@ -383,21 +406,26 @@ public class GnotesController {
 						showDialog(alert,2,"Error",null,"The note is already locked.");
 					} else {
 						if (password==null) {
-							showDialog(alert,0,"Password info",null,"This is gonna be the password you will be using in all of the notes.\nIt can't be more than 30 characters.");
-							password = showPassDialog(dl,"Password",null,"Enter the password: ");
-							if (password!=null) {
+							showDialog(alert,0,"Password info",null,"This is going to be the password you will be using in all of the notes.");
+							textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+							if (textPass!=null) {
+								byte[] passSalt = generateSalt();
+								salt = passSalt;
+								password = hashPassword(textPass, salt);
 								nt.setLocked(true);
-								query.insertPassValue(conn, password);
+								query.insertPassValue(conn, password, salt);
 								query.updateValue(conn, st, nt.getId(), nt.getName(), nt.getNoteText(), nt.isLocked());
 							}
 						} else {
-							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-							if (pswd!=null) {
+							textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+							if (textPass!=null) {
+								pswd = hashPassword(textPass,salt);
 								while (pswd.equals(password)==false) {
-									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-									if (pswd==null) break;
+									textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (textPass==null) break;
+									pswd = hashPassword(textPass,salt);
 								}
-								if ((pswd!=null)&&(pswd.equals(password))) {
+								if ((textPass!=null)&&(pswd.equals(password))) {
 									nt = listnotes.get(sel);
 									nt.setLocked(true);
 									query.updateValue(conn, st, nt.getId(), nt.getName(), nt.getNoteText(), nt.isLocked());
@@ -410,6 +438,7 @@ public class GnotesController {
 		} else if (e.getSource()==unlock) {
 		// What happens when "Unlock note" option is selected
 			String pswd = null;
+			String textPass = null;
 			if (oblist.size()==0) {
 				showDialog(alert,2,"Error",null,"The list is empty.");
 			} else {
@@ -419,13 +448,15 @@ public class GnotesController {
 						showDialog(alert,2,"Error",null,"The are no locked notes.");
 					} else {
 						if (locked) {
-							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-							if (pswd!=null) {
+							textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+							if (textPass!=null) {
+								pswd = hashPassword(textPass,salt);
 								while (pswd.equals(password)==false) {
-									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-									if (pswd==null) break;
+									textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (textPass==null) break;
+									pswd = hashPassword(textPass,salt);
 								}
-								if ((pswd!=null)&&(pswd.equals(password))) {
+								if ((textPass!=null)&&(pswd.equals(password))) {
 									locked = false;
 								}
 							}
@@ -439,13 +470,15 @@ public class GnotesController {
 					} else {
 						Note nt = listnotes.get(sel);
 						if (nt.isLocked()) {
-							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-							if (pswd!=null) {
+							textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+							if (textPass!=null) {
+								pswd = hashPassword(textPass,salt);
 								while (pswd.equals(password)==false) {
-									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-									if (pswd==null) break;
+									textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (textPass==null) break;
+									pswd = hashPassword(textPass,salt);
 								}
-								if ((pswd!=null)&&(pswd.equals(password))) {
+								if ((textPass!=null)&&(pswd.equals(password))) {
 									nt.setLocked(false);
 									query.updateValue(conn, st, nt.getId(), nt.getName(), nt.getNoteText(), nt.isLocked());
 								}
@@ -459,6 +492,7 @@ public class GnotesController {
 		} else if (e.getSource()==changename) {
 			// What happens when "Change note's name" option is selected
 			String pswd = null;
+			String textPass = null;
 			String newName = null;
 			if (oblist.size()==0) {
 				showDialog(alert,2,"Error",null,"The list is empty.");
@@ -474,13 +508,15 @@ public class GnotesController {
 						}
 					} else {
 						if (locked) {
-							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-							if (pswd!=null) {
+							textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+							if (textPass!=null) {
+								pswd = hashPassword(textPass,salt);
 								while (pswd.equals(password)==false) {
-									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-									if (pswd==null) break;
+									textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (textPass==null) break;
+									pswd = hashPassword(textPass,salt);
 								}
-								if ((pswd!=null)&&(pswd.equals(password))) {
+								if ((textPass!=null)&&(pswd.equals(password))) {
 									newName = showInputDialog(dialog,"New Name",null,"Enter the note's new name: ");
 									if (newName!=null) {
 										noteName = newName;
@@ -510,13 +546,15 @@ public class GnotesController {
 					} else {
 						nt = listnotes.get(sel);
 						if (nt.isLocked()) {
-							pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-							if (pswd!=null) {
+							textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+							if (textPass!=null) {
+								pswd = hashPassword(textPass,salt);
 								while (pswd.equals(password)==false) {
-									pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-									if (pswd==null) break;
+									textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+									if (textPass==null) break;
+									pswd = hashPassword(textPass,salt);
 								}
-								if ((pswd!=null)&&(pswd.equals(password))) {
+								if ((textPass!=null)&&(pswd.equals(password))) {
 									newName = showInputDialog(dialog,"New Name",null,"Enter the note's new name: ");
 									nt.setName(newName);
 									oblist.set(sel, nt.getName());
@@ -535,6 +573,7 @@ public class GnotesController {
 		} else if (e.getSource()==newpass) {
 		// What happens when "Change password" option is selected
 			String pswd = null;
+			String textPass = null;
 			String newPass = null;
 			if (password==null) {
 				showDialog(alert,2,"Error",null,"There is no password.");
@@ -547,17 +586,21 @@ public class GnotesController {
 						ind2 = -1;
 						oblist.remove(noteName);
 						details.setHtmlText("");
-						pswd = showPassDialog(dl,"Current Password",null,"Enter current password: ");
-						if (pswd!=null) {
+						textPass = showPassDialog(dl,"Current Password",null,"Enter current password: ");
+						if (textPass!=null) {
+							pswd = hashPassword(textPass,salt);
 							while (pswd.equals(password)==false) {
-								pswd = reEnterPassword(alert, dl,"Current Password",null,"Enter current password: ");
-								if (pswd==null) break;
+								textPass = reEnterPassword(alert, dl,"Current Password",null,"Enter current password: ");
+								if (textPass==null) break;
+								pswd = hashPassword(textPass,salt);
 							}
-							if ((pswd!=null)&&(pswd.equals(password))) {
+							if ((textPass!=null)&&(pswd.equals(password))) {
 								newPass = showPassDialog(dl,"New Password",null,"Enter the new password: ");
 								if (newPass!=null) {
-									password = newPass;
-									query.updatePassValue(conn, st, password);
+									byte[] passSalt = generateSalt();
+									salt = passSalt;
+									password = hashPassword(newPass,salt);
+									query.updatePassValue(conn, st, password, salt);
 								}
 							}
 						}
@@ -567,17 +610,21 @@ public class GnotesController {
 					ind = -1;
 					ind2 = -1;
 					details.setHtmlText("");
-					pswd = showPassDialog(dl,"Current Password",null,"Enter current password: ");
-					if (pswd!=null) {
+					textPass = showPassDialog(dl,"Current Password",null,"Enter current password: ");
+					if (textPass!=null) {
+						pswd = hashPassword(textPass,salt);
 						while (pswd.equals(password)==false) {
-							pswd = reEnterPassword(alert, dl,"Current Password",null,"Enter current password: ");
-							if (pswd==null) break;
+							textPass = reEnterPassword(alert, dl,"Current Password",null,"Enter current password: ");
+							if (textPass==null) break;
+							pswd = hashPassword(textPass,salt);
 						}
-						if ((pswd!=null)&&(pswd.equals(password))) {
+						if ((textPass!=null)&&(pswd.equals(password))) {
 							newPass = showPassDialog(dl,"New Password",null,"Enter the new password: ");
 							if (newPass!=null) {
-								password = newPass;
-								query.updatePassValue(conn, st, password);
+								byte[] passSalt = generateSalt();
+								salt = passSalt;
+								password = hashPassword(newPass,salt);
+								query.updatePassValue(conn, st, password, salt);
 							}
 						}
 					}
@@ -603,20 +650,23 @@ public class GnotesController {
 								locked = false;
 								details.setHtmlText("");
 								if (listnotes.get(ind).isLocked()) {
+									String textPass = null;
 									String pswd = null;
-									pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-									if (pswd!=null) {
+									textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+									if (textPass!=null) {
+										pswd = hashPassword(textPass,salt);
 										while (pswd.equals(password)==false) {
-											pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-											if (pswd==null) {
+											textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+											if (textPass==null) {
 												list.getSelectionModel().select(oblist.size()-1);
 												details.setHtmlText(curText);
 												ind = -1;
 												ind2 = -1;
 												break;
 											}
+											pswd = hashPassword(textPass,salt);
 										}
-										if ((pswd!=null)&&(pswd.equals(password))) {
+										if ((textPass!=null)&&(pswd.equals(password))) {
 											oblist.remove(noteName);
 											list.setItems(oblist);
 											details.setHtmlText(listnotes.get(ind).getNoteText());
@@ -645,19 +695,22 @@ public class GnotesController {
 						} else {
 							if (listnotes.get(ind).isLocked()) {
 								String pswd = null;
+								String textPass = null;
 								list.getSelectionModel().clearSelection();
 								details.setHtmlText("");
-								pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-								if (pswd!=null) {
+								textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+								if (textPass!=null) {
+									pswd = hashPassword(textPass,salt);
 									while (pswd.equals(password)==false) {
-										pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-										if (pswd==null) {
+										textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+										if (textPass==null) {
 											ind = -1;
 											ind2 = -1;
 											break;
 										}
+										pswd = hashPassword(textPass,salt);
 									}
-									if ((pswd!=null)&&(pswd.equals(password))) {		
+									if ((textPass!=null)&&(pswd.equals(password))) {		
 										list.getSelectionModel().select(ind);
 										details.setHtmlText(listnotes.get(ind).getNoteText());
 									}
@@ -673,19 +726,22 @@ public class GnotesController {
 						if (((!saved)&&(newlyCreated))==false) {
 							if (listnotes.get(ind).isLocked()) {
 								String pswd = null;
+								String textPass = null;
 								list.getSelectionModel().clearSelection();
 								details.setHtmlText("");
-								pswd = showPassDialog(dl,"Password",null,"Enter the password: ");
-								if (pswd!=null) {
+								textPass = showPassDialog(dl,"Password",null,"Enter the password: ");
+								if (textPass!=null) {
+									pswd = hashPassword(textPass,salt);
 									while (pswd.equals(password)==false) {
-										pswd = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
-										if (pswd==null) {
+										textPass = reEnterPassword(alert, dl,"Password",null,"Enter the password: ");
+										if (textPass==null) {
 											ind = -1;
 											ind2 = -1;
 											break;
 										}
+										pswd = hashPassword(textPass,salt);
 									}
-									if ((pswd!=null)&&(pswd.equals(password))) {
+									if ((textPass!=null)&&(pswd.equals(password))) {
 										list.getSelectionModel().select(ind);
 										details.setHtmlText(listnotes.get(ind).getNoteText());
 									}
@@ -752,6 +808,7 @@ public class GnotesController {
 		Platform.runLater(() -> password.requestFocus());
 		d.setResultConverter(dialogButton -> {
 		    if (dialogButton == okButtonType) {
+		    	if (password.getText()==null) return "";
 		        return new String(password.getText());
 		    }
 		    else return null;
