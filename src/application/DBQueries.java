@@ -151,7 +151,7 @@ public class DBQueries {
 			st = conn.createStatement();
 			ResultSet results = st.executeQuery("SELECT SALT FROM "+passTableName);
 			while (results.next()) {
-				salt = results.getBytes(2);
+				salt = results.getBytes(1);
 			}
 			results.close();
 			st.close();
