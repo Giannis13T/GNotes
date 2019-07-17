@@ -493,7 +493,9 @@ public class GnotesController {
 								}
 								if ((textPass!=null)&&(pswd.equals(password))) {
 									nt.setLocked(false);
-	/*---------------------------!!!!!!!NEEDS DECRYPTION HERE!!!-----------------------------------------------------------------------------------*/
+									SecretKey key = generateKey(textPass, salt);
+									String decryptedText = decryptText(nt.getNoteText(), key);
+									nt.setNoteText(decryptedText);
 									query.updateValue(conn, st, nt.getId(), nt.getName(), nt.getNoteText(), nt.isLocked());
 								}
 							}
@@ -683,7 +685,9 @@ public class GnotesController {
 										if ((textPass!=null)&&(pswd.equals(password))) {
 											oblist.remove(noteName);
 											list.setItems(oblist);
-											details.setHtmlText(listnotes.get(ind).getNoteText());
+											SecretKey key = generateKey(textPass, salt);
+											String decryptedText = decryptText(listnotes.get(ind).getNoteText(), key);
+											details.setHtmlText(decryptedText);
 											saved = true;
 											newlyCreated = false;
 										}
@@ -726,7 +730,9 @@ public class GnotesController {
 									}
 									if ((textPass!=null)&&(pswd.equals(password))) {		
 										list.getSelectionModel().select(ind);
-										details.setHtmlText(listnotes.get(ind).getNoteText());
+										SecretKey key = generateKey(textPass, salt);
+										String decryptedText = decryptText(listnotes.get(ind).getNoteText(), key);
+										details.setHtmlText(decryptedText);
 									}
 								} else {
 									ind = -1;
@@ -757,7 +763,9 @@ public class GnotesController {
 									}
 									if ((textPass!=null)&&(pswd.equals(password))) {
 										list.getSelectionModel().select(ind);
-										details.setHtmlText(listnotes.get(ind).getNoteText());
+										SecretKey key = generateKey(textPass, salt);
+										String decryptedText = decryptText(listnotes.get(ind).getNoteText(), key);
+										details.setHtmlText(decryptedText);
 									}
 								} else {
 									ind = -1;
@@ -890,13 +898,13 @@ public class GnotesController {
 		}
 	}
 
-	// use AES encryption to encrypt and then convert to Base64 "plainText" using "key" (the key that should be used is the hashed password)
+	// use AES encryption to encrypt and then convert to Base64 "plainText" using "key"
 	public String encryptText(String plainText,SecretKey key) {
 		try {
 			Cipher cipher = Cipher.getInstance("AES");
 			cipher.init(Cipher.ENCRYPT_MODE, key);
 			byte[] cipherText = cipher.doFinal(plainText.getBytes());
-			String encoded = Base64.getEncoder().encodeToString(cipherText);
+			String encoded = new String(Base64.getEncoder().encode(cipherText));
 			return encoded;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -904,7 +912,7 @@ public class GnotesController {
 		}
 	}
 
-	// decrypt an AES encrypted and converted to Base64 "encodedText" using "key" (the key that should be used is the hashed password)
+	// decrypt an AES encrypted and converted to Base64 "encodedText" using "key"
 	public String decryptText(String encodedText,SecretKey key) {
 		try {
 			byte[] cipherText = Base64.getDecoder().decode(encodedText);
