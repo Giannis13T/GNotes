@@ -860,7 +860,7 @@ public class GnotesController {
 	public SecretKey generateKey(String plainTextPass, byte[] salt) {
 		String encodedPass = Base64.getEncoder().encodeToString(plainTextPass.getBytes());
 		char[] charPass = encodedPass.toCharArray();
-		PBEKeySpec spec = new PBEKeySpec(charPass, salt, 65536, 512);
+		PBEKeySpec spec = new PBEKeySpec(charPass, salt, 65536, 256);
 		try {
 			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
 			SecretKey secretKey = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
