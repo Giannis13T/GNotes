@@ -11,6 +11,7 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -192,7 +193,9 @@ public class GnotesController {
 								}
 								if ((textPass!=null)&&(pswd.equals(password))) {
 									idCounter++;
-									newNote = new Note(idCounter, noteName, details.getHtmlText(), locked);
+									SecretKey key = generateKey(textPass, salt);
+									String encryptedText = encryptText(details.getHtmlText(), key);
+									newNote = new Note(idCounter, noteName, encryptedText, locked);
 									listnotes.add(newNote);
 									query.insertValue(conn, st, newNote.getId(), noteName, newNote.getNoteText(), locked);
 									saved = true;
@@ -225,7 +228,9 @@ public class GnotesController {
 									pswd = hashPassword(textPass,salt);
 								}
 								if ((textPass!=null)&&(pswd.equals(password))) {
-									newNote.setNoteText(details.getHtmlText());
+									SecretKey key = generateKey(textPass, salt);
+									String encryptedText = encryptText(details.getHtmlText(), key);
+									newNote.setNoteText(encryptedText);
 									newNote.setLocked(true);
 									query.updateValue(conn, st, newNote.getId(), newNote.getName(), newNote.getNoteText(), newNote.isLocked());
 									saved = true;
@@ -264,7 +269,9 @@ public class GnotesController {
 								pswd = hashPassword(textPass,salt);
 							}
 							if ((textPass!=null)&&(pswd.equals(password))) {
-								newNote.setNoteText(details.getHtmlText());
+								SecretKey key = generateKey(textPass, salt);
+								String encryptedText = encryptText(details.getHtmlText(), key);
+								newNote.setNoteText(encryptedText);
 								newNote.setLocked(true);
 								query.updateValue(conn, st, newNote.getId(), newNote.getName(), newNote.getNoteText(), newNote.isLocked());
 								saved = true;
@@ -414,6 +421,9 @@ public class GnotesController {
 								password = hashPassword(textPass, salt);
 								nt.setLocked(true);
 								query.insertPassValue(conn, password, salt);
+								SecretKey key = generateKey(textPass, salt);
+								String encryptedText = encryptText(nt.getNoteText(), key);
+								nt.setNoteText(encryptedText);
 								query.updateValue(conn, st, nt.getId(), nt.getName(), nt.getNoteText(), nt.isLocked());
 							}
 						} else {
@@ -428,6 +438,9 @@ public class GnotesController {
 								if ((textPass!=null)&&(pswd.equals(password))) {
 									nt = listnotes.get(sel);
 									nt.setLocked(true);
+									SecretKey key = generateKey(textPass, salt);
+									String encryptedText = encryptText(nt.getNoteText(), key);
+									nt.setNoteText(encryptedText);
 									query.updateValue(conn, st, nt.getId(), nt.getName(), nt.getNoteText(), nt.isLocked());
 								}
 							}
@@ -480,6 +493,7 @@ public class GnotesController {
 								}
 								if ((textPass!=null)&&(pswd.equals(password))) {
 									nt.setLocked(false);
+	/*---------------------------!!!!!!!NEEDS DECRYPTION HERE!!!-----------------------------------------------------------------------------------*/
 									query.updateValue(conn, st, nt.getId(), nt.getName(), nt.getNoteText(), nt.isLocked());
 								}
 							}
@@ -841,6 +855,23 @@ public class GnotesController {
 		r.nextBytes(salt);
 		return salt;
 	}
+	
+	// generate the encryption key
+	public SecretKey generateKey(String plainTextPass, byte[] salt) {
+		String encodedPass = Base64.getEncoder().encodeToString(plainTextPass.getBytes());
+		char[] charPass = encodedPass.toCharArray();
+		PBEKeySpec spec = new PBEKeySpec(charPass, salt, 65536, 512);
+		try {
+			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
+			SecretKey secretKey = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+			return secretKey;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		} finally {
+			spec.clearPassword();
+		}
+	}
 
 	// hash the password and return it as a String in Base64 format
 	public String hashPassword(String password, byte[] salt) {
@@ -859,22 +890,24 @@ public class GnotesController {
 		}
 	}
 
-	// use AES encryption to encrypt "plainText" using "key" (the key that should be used is the hashed password)
-	public byte[] encryptText(String plainText,SecretKey key) {
+	// use AES encryption to encrypt and then convert to Base64 "plainText" using "key" (the key that should be used is the hashed password)
+	public String encryptText(String plainText,SecretKey key) {
 		try {
 			Cipher cipher = Cipher.getInstance("AES");
 			cipher.init(Cipher.ENCRYPT_MODE, key);
 			byte[] cipherText = cipher.doFinal(plainText.getBytes());
-			return cipherText;
+			String encoded = Base64.getEncoder().encodeToString(cipherText);
+			return encoded;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return null;
 		}
 	}
 
-	// decrypt an AES encrypted "cipherText" using "key" (the key that should be used is the hashed password)
-	public String decryptText(byte[] cipherText,SecretKey key) {
+	// decrypt an AES encrypted and converted to Base64 "encodedText" using "key" (the key that should be used is the hashed password)
+	public String decryptText(String encodedText,SecretKey key) {
 		try {
+			byte[] cipherText = Base64.getDecoder().decode(encodedText);
 			Cipher cipher = Cipher.getInstance("AES");
 			cipher.init(Cipher.DECRYPT_MODE, key);
 			String plainText = new String(cipher.doFinal(cipherText), "UTF-8");
